@@ -5,10 +5,10 @@ from geometry_msgs.msg import Twist
 import tty, termios
 import select, sys
 
-MAX_LIN_VEL = 0.22 #burgerと同じ
+MAX_LIN_VEL = 0.583 #burgerと同じ
 MAX_ANG_VEL = 2.84
 
-LIN_VEL_STEP_SIZE = 0.01
+LIN_VEL_STEP_SIZE = 0.05
 ANG_VEL_STEP_SIZE = 0.1
 
 msg = """
@@ -18,7 +18,7 @@ Moving around:
         w
    a    s    d
         x
-w/x : increase/decrease linear velocity ( ~ 0.22)
+w/x : increase/decrease linear velocity ( ~ 0.583)
 a/d : increase/decrease angular velocity ( ~ 2.84)
 space key, s : force stop
 CTRL-C to quit
@@ -29,6 +29,16 @@ Communications Failed
 """
 def vels(target_linear_vel, target_angular_vel):
     return "currently:\tlinear vel %s\t angular vel %s " % (target_linear_vel,target_angular_vel)
+
+def makeSimpleProfile(output, input, slop):
+    if input > output:
+        output = min( input, output + slop )
+    elif input < output:
+        output = max( input, output - slop )
+    else:
+        output = input
+
+    return output
 
 def checkLinearLimitVelocity(vel):
     if vel < -MAX_LIN_VEL:
@@ -107,10 +117,10 @@ try:
             
         twist = Twist()
 
-        control_linear_vel = target_linear_vel
+        control_linear_vel = makeSimpleProfile(control_linear_vel, target_linear_vel, (LIN_VEL_STEP_SIZE/2.0))
         twist.linear.x = control_linear_vel; twist.linear.y = 0.0; twist.linear.z = 0.0
 
-        control_angular_vel = target_angular_vel
+        control_angular_vel = makeSimpleProfile(control_angular_vel, target_angular_vel, (ANG_VEL_STEP_SIZE/2.0))
         twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = control_angular_vel
 
         pub.publish(twist)
