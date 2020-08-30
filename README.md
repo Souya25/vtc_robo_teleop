@@ -11,3 +11,8 @@ catkin_make
 (別のターミナルで)roscore
 rosrun vtc_teleop vtc_teleop.py
 ```
+
+https://github.com/ROBOTIS-GIT/turtlebot3/blob/master/turtlebot3_teleop/nodes/turtlebot3_teleop_key
+を基に作成
+変更点
+  ・最大速度を変更
