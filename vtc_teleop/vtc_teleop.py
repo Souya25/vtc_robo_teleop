@@ -5,7 +5,7 @@ from geometry_msgs.msg import Twist
 import tty, termios
 import select, sys
 
-MAX_LIN_VEL = 0.583 #burgerと同じ
+MAX_LIN_VEL = 0.583 
 MAX_ANG_VEL = 2.84
 
 LIN_VEL_STEP_SIZE = 0.05
